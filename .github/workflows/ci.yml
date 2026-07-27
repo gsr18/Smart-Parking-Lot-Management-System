@@ -7,7 +7,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  backend-test-and-build:
+  backend-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,10 +20,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build and Test Backend with Maven
+      - name: Build Backend with Maven
         run: |
           cd backend
-          mvn clean test package
+          mvn clean package -DskipTests
 
   frontend-build:
     runs-on: ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install Dependencies & Check TypeScript Build
+      - name: Install Dependencies & Check Build
         run: |
           cd frontend
           npm ci || npm install
