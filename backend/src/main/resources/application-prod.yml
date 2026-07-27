@@ -1,0 +1,62 @@
+spring:
+  datasource:
+    # Railway provides DATABASE_URL automatically for PostgreSQL
+    # For MySQL: jdbc:mysql://host:3306/dbname?useSSL=true
+    # For PostgreSQL: jdbc:postgresql://host:5432/dbname
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.postgresql.Driver}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      # PostgreSQL keepalive
+      keepalive-time: 60000
+
+  jpa:
+    # Auto-detect dialect from driver; override via env if needed
+    database-platform: ${SPRING_JPA_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
+    hibernate:
+      # 'validate' = Flyway owns schema, Hibernate only validates — NEVER drops data
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    # Flyway validates checksums before running — ensures no accidental re-runs
+    validate-on-migrate: true
+    out-of-order: false
+
+  h2:
+    console:
+      enabled: false
+
+  ai:
+    openai:
+      api-key: ${SPRING_AI_OPENAI_API_KEY:mock-key}
+      chat:
+        options:
+          model: gpt-4o-mini
+          temperature: 0.7
+
+server:
+  port: ${PORT:8080}
+
+logging:
+  level:
+    root: WARN
+    com.smartparking: INFO
+    org.springframework.security: WARN
+    org.flywaydb: INFO
