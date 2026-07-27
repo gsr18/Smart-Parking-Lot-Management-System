@@ -7,7 +7,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  backend-build:
+  build-and-verify:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,28 +18,19 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: maven
 
-      - name: Build Backend with Maven
+      - name: Build Backend JAR
         run: |
           cd backend
           mvn clean package -DskipTests
-
-  frontend-build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
 
       - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
 
-      - name: Install Dependencies & Check Build
+      - name: Verify Frontend Build
         run: |
           cd frontend
-          npm ci || npm install
+          npm install
           npm run build

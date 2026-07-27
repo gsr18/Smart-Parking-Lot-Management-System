@@ -5,23 +5,12 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
-# Allow GitHub Pages deployment
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Only one deployment at a time
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  contents: write
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout Repository
@@ -31,29 +20,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
 
-      - name: Install Dependencies
+      - name: Build Frontend
         run: |
           cd frontend
-          npm ci || npm install
-
-      - name: Build Frontend for Production
-        run: |
-          cd frontend
+          npm install
           npm run build
-        env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
 
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload dist to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to GitHub Pages Branch
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: frontend/dist
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/dist
