@@ -91,20 +91,20 @@ export const Slot3D: React.FC<Slot3DProps> = ({ slot, position, onClick }) => {
             <meshStandardMaterial color="#0284c7" roughness={0.2} metalness={0.9} />
           </mesh>
           {/* Wheels */}
-          <mesh position={[-0.8, 0, 1]}>
-            <cylinderGeometry args={[0.3, 0.3, 0.2, 16]} rotation={[0, 0, Math.PI / 2]} />
+          <mesh position={[-0.8, 0, 1]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.3, 0.3, 0.2, 16]} />
             <meshStandardMaterial color="#1e293b" />
           </mesh>
-          <mesh position={[0.8, 0, 1]}>
-            <cylinderGeometry args={[0.3, 0.3, 0.2, 16]} rotation={[0, 0, Math.PI / 2]} />
+          <mesh position={[0.8, 0, 1]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.3, 0.3, 0.2, 16]} />
             <meshStandardMaterial color="#1e293b" />
           </mesh>
-          <mesh position={[-0.8, 0, -1]}>
-            <cylinderGeometry args={[0.3, 0.3, 0.2, 16]} rotation={[0, 0, Math.PI / 2]} />
+          <mesh position={[-0.8, 0, -1]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.3, 0.3, 0.2, 16]} />
             <meshStandardMaterial color="#1e293b" />
           </mesh>
-          <mesh position={[0.8, 0, -1]}>
-            <cylinderGeometry args={[0.3, 0.3, 0.2, 16]} rotation={[0, 0, Math.PI / 2]} />
+          <mesh position={[0.8, 0, -1]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.3, 0.3, 0.2, 16]} />
             <meshStandardMaterial color="#1e293b" />
           </mesh>
         </group>

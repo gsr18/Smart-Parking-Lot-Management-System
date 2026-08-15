@@ -19,7 +19,7 @@ export const VehiclesPage: React.FC = () => {
 
   const { data: vehicles, isLoading, refetch } = useQuery({
     queryKey: ['vehicles-all'],
-    queryFn: vehicleService.getAllVehicles,
+    queryFn: () => vehicleService.getAllVehicles(),
   });
 
   const columns: Column<Vehicle>[] = [
@@ -43,51 +43,49 @@ export const VehiclesPage: React.FC = () => {
       key: 'ownerName',
       header: 'Owner Name',
       sortable: true,
-      render: (item) => <span className="font-bold text-[#0f172a] dark:text-white">{item.ownerName || 'Guest'}</span>,
+      render: (item) => <span className="font-semibold text-slate-700 dark:text-slate-200">{item.ownerName}</span>,
     },
     {
       key: 'ownerContact',
-      header: 'Contact Number',
-      render: (item) => <span className="font-mono text-slate-600 dark:text-slate-300">{item.ownerContact || '—'}</span>,
+      header: 'Owner Contact',
+      render: (item) => <span className="font-mono text-slate-500 dark:text-slate-400">{item.ownerContact}</span>,
     },
     {
-      key: 'status',
-      header: 'Current Status',
-      sortable: true,
-      render: (item) =>
-        item.currentlyParked ? (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold font-mono bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
-            PARKED {item.activeSlotNumber ? `(${item.activeSlotNumber})` : ''}
-          </span>
-        ) : (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold font-mono bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700">
-            CHECKED OUT
-          </span>
-        ),
-    },
-    {
-      key: 'createdAt',
-      header: 'Registered Date',
+      key: 'currentlyParked',
+      header: 'Status',
       sortable: true,
       render: (item) => (
-        <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
-          {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-bold ${
+            item.currentlyParked
+              ? 'bg-[#ecfdf5] dark:bg-emerald-950/30 text-[#10b981] border border-[#10b981]/20'
+              : 'bg-[#f8fafc] dark:bg-slate-900/30 text-slate-400 border border-slate-200 dark:border-slate-800'
+          }`}
+        >
+          {item.currentlyParked ? 'PARKED' : 'EXITED'}
+        </span>
+      ),
+    },
+    {
+      key: 'activeSlotNumber',
+      header: 'Slot',
+      render: (item) => (
+        <span className="font-mono font-bold text-slate-700 dark:text-slate-300">
+          {item.currentlyParked ? item.activeSlotNumber : '-'}
         </span>
       ),
     },
     {
       key: 'actions',
-      header: 'Action',
-      align: 'right',
+      header: 'Quick Action',
       render: (item) =>
         item.currentlyParked ? (
           <Button
             variant="outline"
             size="sm"
             icon={CheckSquare}
-            className="border-pink-300 dark:border-pink-500/40 text-pink-700 dark:text-pink-300 hover:bg-pink-50 dark:hover:bg-pink-950/40"
             onClick={() => {
-              setPrefilledPlate(item.vehicleNumber || item.registrationNumber || '');
+              setPrefilledPlate(item.vehicleNumber || '');
               setPrefilledSlot(item.activeSlotNumber || '');
               setIsCheckOutOpen(true);
             }}
@@ -96,11 +94,11 @@ export const VehiclesPage: React.FC = () => {
           </Button>
         ) : (
           <Button
-            variant="secondary"
+            variant="primary"
             size="sm"
             icon={ParkingSquare}
             onClick={() => {
-              setPrefilledPlate(item.vehicleNumber || item.registrationNumber || '');
+              setPrefilledPlate(item.vehicleNumber || '');
               setIsCheckInOpen(true);
             }}
           >
@@ -115,7 +113,7 @@ export const VehiclesPage: React.FC = () => {
       {/* Control Bar */}
       <div className="flex items-center justify-between gap-3 glass-panel p-3.5 rounded-3xl shadow-sm dark:shadow-[#080b38]/50 border border-[#9ed9db]/50 dark:border-[#522377]/40 bg-white/90 dark:bg-[#133155]/60">
         <div className="flex items-center gap-2 font-mono text-xs text-[#0e7490] dark:text-purple-300">
-          <span>Registered Vehicles Count: <strong className="text-[#0f172a] dark:text-white font-black">{vehicles?.length || 0}</strong></span>
+          <span>Registered Vehicles Count: <strong className="text-[#0f172a] dark:text-white font-black">{vehicles?.content?.length || 0}</strong></span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -131,7 +129,7 @@ export const VehiclesPage: React.FC = () => {
       {/* Directory Data Table */}
       <DataTable
         columns={columns}
-        data={vehicles || []}
+        data={vehicles?.content || []}
         keyExtractor={(item) => item.id}
         isLoading={isLoading}
         searchPlaceholder="Search by vehicle plate, owner name, contact..."

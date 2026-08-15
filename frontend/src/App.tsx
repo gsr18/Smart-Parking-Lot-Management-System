@@ -96,7 +96,7 @@ const ProtectedLayout: React.FC = () => {
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
         onOpenCheckIn={() => setIsCheckInOpen(true)}
-        onOpenCheckOut={() => setIsCheckOutOut(true)}
+        onOpenCheckOut={() => setIsCheckOutOpen(true)}
       />
 
       <CheckInModal

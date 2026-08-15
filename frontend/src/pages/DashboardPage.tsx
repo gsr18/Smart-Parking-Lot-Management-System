@@ -208,7 +208,7 @@ export const DashboardPage: React.FC = () => {
           />
           <MetricTile
             label="Revenue Collected Today"
-            value={`₹${(summary?.revenueToday != null ? summary.revenueToday : summary?.todayRevenue != null ? summary.todayRevenue : 0).toFixed(2)}`}
+            value={`₹${(summary?.revenueToday ?? 0).toFixed(2)}`}
             subtext="Today's total revenue"
             icon={DollarSign}
           />

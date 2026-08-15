@@ -51,7 +51,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
       const rec = await aiService.recommendSlot(vehicleType);
       if (rec.slotNumber) {
         setPreferredSlot(rec.slotNumber);
-        setAiReason(rec.reason || rec.AIRecommendationSummary);
+        setAiReason(rec.reason || rec.aiRecommendationSummary || null);
         toast.success(`AI Recommended Slot ${rec.slotNumber}!`);
       } else {
         toast.error("AI couldn't find an available slot for this vehicle type.");

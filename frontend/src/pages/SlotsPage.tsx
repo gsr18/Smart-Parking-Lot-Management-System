@@ -18,18 +18,21 @@ export const SlotsPage: React.FC = () => {
 
   const { data: slots, isLoading, refetch } = useQuery({
     queryKey: ['slots-all'],
-    queryFn: slotService.getAllSlots,
+    queryFn: () => slotService.getAllSlots(),
   });
 
   const { data: companyLayout } = useQuery({
     queryKey: ['company-layout'],
-    queryFn: companyService.getMyCompanyLayout,
+    queryFn: () => companyService.getMyCompanyLayout(),
   });
 
   const toggleStatusMutation = useMutation({
     mutationFn: ({ slotId, currentStatus }: { slotId: number; currentStatus: string }) => {
-      const nextStatus = currentStatus === 'MAINTENANCE' ? 'AVAILABLE' : 'MAINTENANCE';
-      return slotService.updateSlotStatus(slotId, nextStatus);
+      if (currentStatus === 'DISABLED') {
+        return slotService.enableSlot(slotId);
+      } else {
+        return slotService.disableSlot(slotId);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['slots-all'] });
@@ -48,7 +51,16 @@ export const SlotsPage: React.FC = () => {
 
   // Dynamically compute floor numbers based on company layout & slots
   const slotFloors = Array.from(new Set(rawSlots.map((s) => s.floorNumber))).filter(Boolean);
-  const totalFloorsFromConfig = companyLayout?.totalFloors || (slotFloors.length > 0 ? Math.max(...slotFloors) : 1);
+  
+  let parsedConfig: any = null;
+  if (companyLayout?.layoutConfig) {
+    try {
+      parsedConfig = JSON.parse(companyLayout.layoutConfig);
+    } catch (e) {
+      // Ignore parsing errors
+    }
+  }
+  const totalFloorsFromConfig = parsedConfig?.totalFloors || (slotFloors.length > 0 ? Math.max(...slotFloors) : 1);
   const floorNumbers = Array.from({ length: Math.max(totalFloorsFromConfig, slotFloors.length > 0 ? Math.max(...slotFloors) : 1) }, (_, i) => i + 1);
 
   const filteredSlots = rawSlots.filter((s) => {
@@ -108,13 +120,13 @@ export const SlotsPage: React.FC = () => {
       render: (item) =>
         activeRole === 'ROLE_ADMIN' ? (
           <Button
-            variant={item.status === 'MAINTENANCE' ? 'primary' : 'outline'}
+            variant={item.status === 'DISABLED' ? 'primary' : 'outline'}
             size="sm"
             icon={Wrench}
             disabled={item.status === 'OCCUPIED'}
             onClick={() => toggleStatusMutation.mutate({ slotId: item.id, currentStatus: item.status })}
           >
-            {item.status === 'MAINTENANCE' ? 'Set Available' : 'Set Maintenance'}
+            {item.status === 'DISABLED' ? 'Set Available' : 'Set Disabled'}
           </Button>
         ) : (
           <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">View Only</span>

@@ -2,8 +2,9 @@ import axios from 'axios';
 
 // In development: Vite proxy forwards /api → localhost:8080
 // In production: VITE_API_BASE_URL points to Railway backend
-const baseURL = import.meta.env.VITE_API_BASE_URL
-  ? `${import.meta.env.VITE_API_BASE_URL}/api/v1`
+const metaEnv = (import.meta as any).env;
+const baseURL = metaEnv && metaEnv.VITE_API_BASE_URL
+  ? `${metaEnv.VITE_API_BASE_URL}/api/v1`
   : '/api/v1';
 
 const api = axios.create({

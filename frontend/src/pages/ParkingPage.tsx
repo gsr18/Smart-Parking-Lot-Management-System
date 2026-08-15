@@ -21,7 +21,7 @@ export const ParkingPage: React.FC = () => {
 
   const { data: activeSessions, isLoading: isActiveLoading, refetch: refetchActive } = useQuery({
     queryKey: ['parking-active-sessions'],
-    queryFn: parkingService.getActiveSessions,
+    queryFn: () => parkingService.getActiveSessions(),
     refetchInterval: 5000,
   });
 
@@ -186,7 +186,7 @@ export const ParkingPage: React.FC = () => {
                   : 'text-[#0e7490] dark:text-slate-300 hover:text-[#0f172a] dark:text-white dark:hover:text-white'
               }`}
             >
-              Active Sessions ({activeSessions?.length || 0})
+              Active Sessions ({activeSessions?.content?.length || 0})
             </button>
             <button
               onClick={() => setActiveTab('history')}
@@ -217,7 +217,7 @@ export const ParkingPage: React.FC = () => {
       {/* Main Table */}
       <DataTable
         columns={columns}
-        data={activeTab === 'active' ? activeSessions || [] : historySessions || []}
+        data={activeTab === 'active' ? (activeSessions?.content || []) : (historySessions?.content || [])}
         keyExtractor={(item) => item.id}
         isLoading={activeTab === 'active' ? isActiveLoading : isHistoryLoading}
         searchPlaceholder="Filter sessions by vehicle plate, slot, owner..."
