@@ -31,8 +31,8 @@ public class DatabaseConfig {
         String pgpassword = System.getenv("PGPASSWORD");
 
         String selectedUrl = rawUrl != null && !rawUrl.isBlank() ? rawUrl :
-                             dbUrl != null && !dbUrl.isBlank() ? dbUrl :
-                             dbPublicUrl;
+                             dbPublicUrl != null && !dbPublicUrl.isBlank() ? dbPublicUrl :
+                             dbUrl;
 
         String finalUrl = null;
         String username = System.getenv("SPRING_DATASOURCE_USERNAME");
