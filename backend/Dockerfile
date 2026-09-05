@@ -9,8 +9,9 @@ RUN MAVEN_OPTS="-Xmx384m" mvn clean package -DskipTests
 # Stage 2: Production Lightweight JRE Runner
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-COPY --from=builder /app/target/*.jar app.jar
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup && \
+    mkdir -p /app/data && chown -R appuser:appgroup /app
+COPY --from=builder --chown=appuser:appgroup /app/target/*.jar app.jar
 USER appuser
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
