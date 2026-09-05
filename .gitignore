@@ -5,6 +5,7 @@ backend/target/
 backend/*.jar
 backend/*.war
 backend/data/
+data/
 backend/logs/
 backend/.mvn/
 backend/mvnw

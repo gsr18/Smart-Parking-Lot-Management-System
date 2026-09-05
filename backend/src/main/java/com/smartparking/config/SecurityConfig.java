@@ -39,6 +39,17 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/",
+                    "/index.html",
+                    "/assets/**",
+                    "/*.html",
+                    "/*.js",
+                    "/*.css",
+                    "/*.ico",
+                    "/*.png",
+                    "/*.svg",
+                    "/*.json",
+                    "/404.html",
                     "/api/v1/auth/**",
                     "/api/v1/companies/public",
                     "/v3/api-docs/**",
@@ -47,7 +58,8 @@ public class SecurityConfig {
                     "/actuator/**",
                     "/h2-console/**"
                 ).permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
             );
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
