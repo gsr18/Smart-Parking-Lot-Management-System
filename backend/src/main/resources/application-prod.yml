@@ -3,9 +3,9 @@ spring:
     # Railway provides DATABASE_URL automatically for PostgreSQL
     # For MySQL: jdbc:mysql://host:3306/dbname?useSSL=true
     # For PostgreSQL: jdbc:postgresql://host:5432/dbname
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:${DATABASE_PUBLIC_URL:${DATABASE_URL:jdbc:postgresql://localhost:5432/railway}}}
+    username: ${SPRING_DATASOURCE_USERNAME:${PGUSER:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${PGPASSWORD:}}
     driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.postgresql.Driver}
     hikari:
       maximum-pool-size: 10

@@ -9,8 +9,9 @@ export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
 
   return {
-    // GitHub Pages serves from /Smart-Parking-Lot-Management-System/ in production
-    base: isProduction ? '/Smart-Parking-Lot-Management-System/' : '/',
+    // Vercel: base='/', GitHub Pages: base='/Smart-Parking-Lot-Management-System/'
+    // Set VITE_BASE_PATH in each platform's env vars
+    base: env.VITE_BASE_PATH || '/',
 
     plugins: [react(), tailwindcss()],
 

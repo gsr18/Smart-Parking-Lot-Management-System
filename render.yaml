@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: smart-parking-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: PORT
+        value: 8080
+      - key: DATABASE_URL
+        fromDatabase:
+          name: smartparking-db
+          property: connectionString
+
+databases:
+  - name: smartparking-db
+    plan: free
+    databaseName: smartparking
+    user: smartparking
+
