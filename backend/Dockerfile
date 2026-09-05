@@ -4,7 +4,7 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B || true
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN MAVEN_OPTS="-Xmx384m" mvn clean package -DskipTests
 
 # Stage 2: Production Lightweight JRE Runner
 FROM eclipse-temurin:21-jre-alpine
@@ -15,4 +15,4 @@ USER appuser
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Xmx384m", "-Xms128m", "-jar", "app.jar"]

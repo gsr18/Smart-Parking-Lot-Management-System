@@ -1,4 +1,11 @@
+databases:
+  - name: smartparking-db
+    plan: free
+    databaseName: smartparking
+    user: smartparking
+
 services:
+  # 1. Spring Boot Backend Web Service
   - type: web
     name: smart-parking-backend
     runtime: docker
@@ -16,9 +23,21 @@ services:
           name: smartparking-db
           property: connectionString
 
-databases:
-  - name: smartparking-db
-    plan: free
-    databaseName: smartparking
-    user: smartparking
+  # 2. React Frontend Static Site
+  - type: web
+    name: smart-parking-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: smart-parking-backend
+          property: host
 

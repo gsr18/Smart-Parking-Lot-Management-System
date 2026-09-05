@@ -42,7 +42,7 @@ app:
     secret: 404E635266556A586E3272357538782F413F4428472B4B6250655368566D5971
     expiration-ms: 86400000 # 24 hours
   cors:
-    allowed-origins: "${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,https://gsr18.github.io,https://*.vercel.app,https://*.railway.app}"
+    allowed-origins: "${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,https://gsr18.github.io,https://*.vercel.app,https://*.railway.app,https://*.onrender.com}"
     allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
     allowed-headers: "*"
     allow-credentials: true
